@@ -7,7 +7,7 @@
     const addPlayerBtn: string = 'addPlayerBtn';
 
     let startGame = ref(false);
-    let addedPlayers = ref<string[]>([]);
+    let addedPlayers = ref<object[]>([]);
 
     let playerNameX = ref('');
     let playerNameO = ref('');
@@ -15,13 +15,13 @@
     function addPlayer() {
 
         if(addedPlayers.value.length === 0) {
-            const newPlayer = new Player(playerNameX.value, 'X');
-            addedPlayers.value.push(newPlayer.name);
-            localStorage.setItem('PlayerList', JSON.stringify(newPlayer));
+            const newPlayerX = new Player(playerNameX.value, 'X');
+            addedPlayers.value.push(newPlayerX);
+            localStorage.setItem('playerList', JSON.stringify(newPlayerX));
         } else {
-            const newPlayer = new Player(playerNameO.value, 'O');
-            addedPlayers.value.push(newPlayer.name);
-            localStorage.setItem('PlayerList', JSON.stringify(newPlayer));
+            const newPlayerO = new Player(playerNameO.value, 'O');
+            addedPlayers.value.push(newPlayerO);
+            localStorage.setItem('playerList', JSON.stringify(newPlayerO));
         };
 
         checkAddedPlayersLength();
@@ -51,7 +51,7 @@
         <button :class="addPlayerBtn" @click="addPlayer">Add Player</button>
     </div>
     <template v-else>
-        <GameplayView></GameplayView>
+        <GameplayView :player="addedPlayers"></GameplayView>
     </template>
 </template>
 
@@ -62,6 +62,10 @@
 
         label {
             margin-bottom: 1em;
+        }
+
+        .addPlayerBtn {
+            margin-top: 1em;
         }
     }
 </style>

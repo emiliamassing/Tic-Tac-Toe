@@ -1,4 +1,6 @@
 <script setup lang="ts">
+    import Player from '../models/Player';
+
     const gridPositions: string[] = [
         '1',
         '2',
@@ -14,11 +16,20 @@
     const gridContainer: string = 'gridContainer';
     const gridCell: string = 'gridCell';
 
+    interface IPlayerProps {
+        player: Player,
+    };
+
+    const props = defineProps<IPlayerProps>();
+
+    console.log(props.player);
+    
 </script>
 
 <template>
     <h2>Gameplay</h2>
     <main>
+        <p>{{ props.player }}</p>
         <div :class="gridContainer">
             <div v-for="grid in gridPositions" :class="gridCell"></div>
         </div>
