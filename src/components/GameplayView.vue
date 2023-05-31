@@ -1,5 +1,7 @@
 <script setup lang="ts">
+    import { ref } from 'vue';
     import Player from '../models/Player';
+    import AddPlayer from './AddPlayer.vue';
 
     const gridPositions: string[] = [
         '1',
@@ -13,6 +15,8 @@
         '9'
     ];
 
+    let gameRunning = ref(true);
+
     const gridContainer: string = 'gridContainer';
     const gridCell: string = 'gridCell';
     const buttonContainer: string = 'buttonContainer';
@@ -23,30 +27,32 @@
 
     const props = defineProps<IPlayerProps>();
 
-    console.log(props.player);
-
+    function endGame() {
+        gameRunning.value = false;
+        localStorage.removeItem('playerList');
+    };
 
     function randomizeFirstPlayer(): void {
         
     };
-
-    randomizeFirstPlayer();
-    
 </script>
 
 <template>
-    <h2>Gameplay</h2>
-    <main>
+    <main v-if="gameRunning">
+        <h2>Gameplay</h2>
+        <nav :class="buttonContainer">
+            <button>Show Results</button>
+            <button>Clear Board</button>
+            <button @click="endGame">Reset Game</button>
+        </nav>
         <p>{{ props.player }}</p>
         <div :class="gridContainer">
             <div v-for="grid in gridPositions" :class="gridCell"></div>
         </div>
-        <div :class="buttonContainer">
-            <button>Show Results</button>
-            <button>Clear Board</button>
-            <button>Reset Game</button>
-        </div>
     </main>
+    <template v-else>
+        <AddPlayer></AddPlayer>
+    </template>
 </template>
 
 <style lang="scss">
