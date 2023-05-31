@@ -7,28 +7,54 @@
     const addPlayerBtn: string = 'addPlayerBtn';
 
     let startGame = ref(false);
-    let addedPlayers = ref<object[]>([]);
+    let players = ref<object[]>([]);
 
     let playerNameX = ref('');
     let playerNameO = ref('');
 
-    function addPlayer() {
+    let localPlayerList = localStorage.getItem('playerList') || [];
 
-        if(addedPlayers.value.length === 0) {
-            const newPlayerX = new Player(playerNameX.value, 'X');
-            addedPlayers.value.push(newPlayerX);
-            localStorage.setItem('playerList', JSON.stringify(newPlayerX));
-        } else {
-            const newPlayerO = new Player(playerNameO.value, 'O');
-            addedPlayers.value.push(newPlayerO);
-            localStorage.setItem('playerList', JSON.stringify(newPlayerO));
-        };
-
-        checkAddedPlayersLength();
+    if(typeof localPlayerList === 'string') {
+        const parse = JSON.parse(localPlayerList);
     };
 
-    function checkAddedPlayersLength() {
-        if(addedPlayers.value.length === 2) {
+    /*function addToLocalStorage(playerObject: Player) {
+        let localPlayerList = localStorage.getItem('playerList') || [];
+
+        if(typeof localPlayerList === 'string') {
+            const parse = JSON.parse(localPlayerList);
+        };
+
+        [localPlayerList].push(JSON.stringify(playerObject));
+
+        localStorage.setItem('playerList', JSON.stringify(playerObject));
+    };*/
+
+    function addPlayer() {
+
+        if(players.value.length === 0) {
+            const newPlayerX = new Player(playerNameX.value, 'X');
+            players.value.push(newPlayerX);
+            
+            [localPlayerList].push(JSON.stringify(newPlayerX));
+            localStorage.setItem('playerList', JSON.stringify(newPlayerX));
+
+            //addToLocalStorage(newPlayerX);
+        } else {
+            const newPlayerO = new Player(playerNameO.value, 'O');
+            players.value.push(newPlayerO);
+
+            [localPlayerList].push(JSON.stringify(newPlayerO));
+            localStorage.setItem('playerList', JSON.stringify(newPlayerO));
+
+            //addToLocalStorage(newPlayerO);
+        };
+
+        checkplayersLength();
+    };
+
+    function checkplayersLength() {
+        if(players.value.length === 2) {
             startGame.value = true;
         };
     };
@@ -36,13 +62,13 @@
 
 <template>
     <div :class="addPlayerContainer" v-if="!startGame">
-        <div class="playerX" v-if="addedPlayers.length === 0">
+        <div class="playerX" v-if="players.length === 0">
             <span>Player name X: </span>
             <label for="name">
                 <input type='text' name='player' v-model="playerNameX">
             </label>
         </div>
-        <div class="playerO" v-else-if="addedPlayers.length === 1">
+        <div class="playerO" v-else-if="players.length === 1">
             <span>Player name O: </span>
             <label for="name">
             <input type='text' name='player' v-model="playerNameO">
@@ -51,7 +77,7 @@
         <button :class="addPlayerBtn" @click="addPlayer">Add Player</button>
     </div>
     <template v-else>
-        <GameplayView :player="addedPlayers"></GameplayView>
+        <GameplayView :player="players"></GameplayView>
     </template>
 </template>
 
