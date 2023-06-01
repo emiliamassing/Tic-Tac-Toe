@@ -1,4 +1,5 @@
 export interface IGameBoard {
-    position: string,
-    shape: string
+    position: number,
+    shape: string,
+    clicked: boolean
 };
