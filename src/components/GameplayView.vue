@@ -46,6 +46,13 @@
         localStorage.removeItem('playerList');
     };
 
+    function clearBoard() {
+        gridTemplate.value.forEach(grid => {
+            grid.shape = '';
+            grid.clicked = false;
+        });
+    };
+
     /*function randomizeFirstPlayer(): Player {
         const randomPlayer = props.player[Math.floor(Math.random()*props.player.length)];
         console.log(randomPlayer);
@@ -54,13 +61,18 @@
     };*/
 
     function placeShape(position: number) {
-        console.log('Placera pjäs', position);
-        console.log('Plats', gridTemplate.value[position]);
+       // console.log('Placera pjäs', position);
+       // console.log('Plats', gridTemplate.value[position]);
         
         gridTemplate.value[position].shape = activePlayer.value.shape;
         gridTemplate.value[position].clicked = true;
+
+        swapActivePlayer();
     };
 
+    function swapActivePlayer() {
+        console.log('Swap Active Player');
+    };
 </script>
 
 <template>
@@ -68,12 +80,12 @@
         <h2>Gameplay</h2>
         <nav :class="buttonContainer">
             <button>Show Results</button>
-            <button>Clear Board</button>
+            <button @click="clearBoard">Clear Board</button>
             <button @click="endGame">Reset Game</button>
         </nav>
         <p>{{ props.player[0].name }} VS {{  props.player[1].name }}</p>
         <div :class="gridContainer">
-            <div v-for="grid in gridTemplate" :class="gridCell" v-bind:key="grid.position" @click="placeShape(grid.position)">
+            <div v-for="grid in gridTemplate" :class="gridCell" v-bind:key="grid.position" @click.once="placeShape(grid.position)">
                 <span> {{ grid.shape }} </span>
             </div>
         </div>

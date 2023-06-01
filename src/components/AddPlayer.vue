@@ -33,13 +33,13 @@
     function addPlayer() {
 
         if(players.value.length === 0) {
-            const newPlayerX = new Player(playerNameX.value, 'X');
+            const newPlayerX = new Player(playerNameX.value, 'X', true);
             players.value.push(newPlayerX);
             
             [localPlayerList].push(JSON.stringify(newPlayerX));
             localStorage.setItem('playerList', JSON.stringify(newPlayerX));
         } else {
-            const newPlayerO = new Player(playerNameO.value, 'O');
+            const newPlayerO = new Player(playerNameO.value, 'O', false);
             players.value.push(newPlayerO);
 
             [localPlayerList].push(JSON.stringify(newPlayerO));
