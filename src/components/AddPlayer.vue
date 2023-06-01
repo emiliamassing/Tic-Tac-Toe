@@ -7,7 +7,7 @@
     const addPlayerBtn: string = 'addPlayerBtn';
 
     let startGame = ref(false);
-    let players = ref<object[]>([]);
+    let players = ref<Player[]>([]);
 
     let playerNameX = ref('');
     let playerNameO = ref('');
@@ -38,16 +38,12 @@
             
             [localPlayerList].push(JSON.stringify(newPlayerX));
             localStorage.setItem('playerList', JSON.stringify(newPlayerX));
-
-            //addToLocalStorage(newPlayerX);
         } else {
             const newPlayerO = new Player(playerNameO.value, 'O');
             players.value.push(newPlayerO);
 
             [localPlayerList].push(JSON.stringify(newPlayerO));
             localStorage.setItem('playerList', JSON.stringify(newPlayerO));
-
-            //addToLocalStorage(newPlayerO);
         };
 
         checkplayersLength();

@@ -1,18 +1,19 @@
 <script setup lang="ts">
     import { ref } from 'vue';
     import Player from '../models/Player';
+    import { IGameBoard } from '../models/IGameBoard';
     import AddPlayer from './AddPlayer.vue';
-
-    const gridPositions: string[] = [
-        '1',
-        '2',
-        '3',
-        '4',
-        '5',
-        '6',
-        '7',
-        '8',
-        '9'
+    
+    const gridTemplate: IGameBoard[] = [
+        {position: '1', shape: ''},
+        {position: '2', shape: ''},
+        {position: '3', shape: ''},
+        {position: '4', shape: ''},
+        {position: '5', shape: ''},
+        {position: '6', shape: ''},
+        {position: '7', shape: ''},
+        {position: '8', shape: ''},
+        {position: '9', shape: ''},
     ];
 
     let gameRunning = ref(true);
@@ -22,11 +23,11 @@
     const buttonContainer: string = 'buttonContainer';
 
     interface IPlayerProps {
-        player: Player,
+        player: Player[],
     };
 
     const props = defineProps<IPlayerProps>();
-
+        
     function endGame() {
         gameRunning.value = false;
         localStorage.removeItem('playerList');
@@ -47,7 +48,7 @@
         </nav>
         <p>{{ props.player }}</p>
         <div :class="gridContainer">
-            <div v-for="grid in gridPositions" :class="gridCell"></div>
+            <div v-for="grid in gridTemplate" :class="gridCell"></div>
         </div>
     </main>
     <template v-else>
