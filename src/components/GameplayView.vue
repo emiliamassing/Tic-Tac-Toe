@@ -1,10 +1,15 @@
 <script setup lang="ts">
     import { ref } from 'vue';
+    import AddPlayer from './AddPlayer.vue';
     import Player from '../models/Player';
     import { IGameBoard } from '../models/IGameBoard';
-    import AddPlayer from './AddPlayer.vue';
+
+    interface IPlayerProps {
+        player: Player[],
+    };
     
-    const gridTemplate: IGameBoard[] = [
+    const gridTemplate = ref<IGameBoard[]>([
+        {position: 0, shape: '', clicked: false},
         {position: 1, shape: '', clicked: false},
         {position: 2, shape: '', clicked: false},
         {position: 3, shape: '', clicked: false},
@@ -13,8 +18,7 @@
         {position: 6, shape: '', clicked: false},
         {position: 7, shape: '', clicked: false},
         {position: 8, shape: '', clicked: false},
-        {position: 9, shape: '', clicked: false},
-    ];
+    ]);
 
     const winningPatterns: number[][] = [
         [0, 1, 2],
@@ -25,36 +29,38 @@
         [2, 5, 8],
         [0, 4, 8],
         [2, 4, 6]
-    ]
+    ];
 
     let gameRunning = ref(true);
-
+    
     const gridContainer: string = 'gridContainer';
     const gridCell: string = 'gridCell';
     const buttonContainer: string = 'buttonContainer';
 
-    interface IPlayerProps {
-        player: Player[],
-    };
-
     const props = defineProps<IPlayerProps>();
 
-    console.log(props.player);
+    let activePlayer = ref(props.player[0]);
     
-        
     function endGame() {
         gameRunning.value = false;
         localStorage.removeItem('playerList');
     };
 
-    function randomizeFirstPlayer(): Player {
+    /*function randomizeFirstPlayer(): Player {
         const randomPlayer = props.player[Math.floor(Math.random()*props.player.length)];
         console.log(randomPlayer);
 
         return randomPlayer;
+    };*/
+
+    function placeShape(position: number) {
+        console.log('Placera pjäs', position);
+        console.log('Plats', gridTemplate.value[position]);
+        
+        gridTemplate.value[position].shape = activePlayer.value.shape;
+        gridTemplate.value[position].clicked = true;
     };
 
-    randomizeFirstPlayer();
 </script>
 
 <template>
@@ -67,7 +73,7 @@
         </nav>
         <p>{{ props.player[0].name }} VS {{  props.player[1].name }}</p>
         <div :class="gridContainer">
-            <div v-for="grid in gridTemplate" :class="gridCell" v-bind:key="grid.position">
+            <div v-for="grid in gridTemplate" :class="gridCell" v-bind:key="grid.position" @click="placeShape(grid.position)">
                 <span> {{ grid.shape }} </span>
             </div>
         </div>
