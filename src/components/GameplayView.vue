@@ -33,6 +33,7 @@
 
     let gameIsRunning = ref(true);
     let hasWon = ref(false);
+    let isTie = ref(false);
     let winningPlayer = ref();
     
     const gridContainer: string = 'gridContainer';
@@ -63,6 +64,7 @@
             grid.clicked = false;
             hasWon.value = false;
             winningPlayer.value = '';
+            activePlayer.value = props.player[0];
         });
     };
 
@@ -72,6 +74,7 @@
             gridTemplate.value[position].clicked = true;
 
             checkIfWinner();
+            checkIfTie();
             swapActivePlayer();
         };
     };
@@ -92,19 +95,26 @@
                     const winner = props.player[0];
                     winningPlayer.value = winner;
                     markAsClicked();
-
-
-                    console.log(winner, 'Has Won!');
                     
                 } else if(activePlayer.value === props.player[1]) {
                     const winner = props.player[1];
                     winningPlayer.value = winner;
-
-                    console.log(winner, 'Has Won!');
+                    markAsClicked();
                 };
 
-                activePlayer.value = props.player[0];
+                activePlayer.value = props.player[0]; 
+                return;
             };
+        };
+    };
+
+    function checkIfTie() {
+
+        if(gridTemplate.value.every((item) => item.shape != '')) {
+            console.log('Tie');
+
+            hasWon.value = true;
+            isTie.value = true;
         };
     };
 
@@ -116,10 +126,8 @@
 
     function swapActivePlayer() {
         if(activePlayer.value === props.player[0]) {
-            console.log('X');
             activePlayer.value = props.player[1];
         } else {
-            console.log('O');
             activePlayer.value = props.player[0];
         };
     };
@@ -132,8 +140,13 @@
             <button @click="clearBoard">Clear Board</button>
             <button @click="endGame">Reset Game</button>
         </nav>
-        <h2 v-if="!hasWon">{{ props.player[0].name }} VS {{  props.player[1].name }}</h2>
-        <h2 v-else="winner">Congratulations, {{ winningPlayer.name }} has won the game!</h2>
+        <h2>{{ props.player[0].name }} VS {{  props.player[1].name }}</h2>
+        <template v-if="hasWon && !isTie">
+            <h3>Congratulations, {{ winningPlayer.name }} has won the game!</h3>
+        </template>
+        <template v-else-if="hasWon && isTie">
+            <h3>It's a tie!</h3>
+        </template>
         <div :class="gridContainer">
             <div v-for="grid in gridTemplate" :class="gridCell" v-bind:key="grid.position" @click="placeShape(grid.position)">
                 <span> {{ grid.shape }} </span>
