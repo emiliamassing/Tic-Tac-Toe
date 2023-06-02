@@ -91,6 +91,8 @@
                 if(activePlayer.value === props.player[0]) {
                     const winner = props.player[0];
                     winningPlayer.value = winner;
+                    markAsClicked();
+
 
                     console.log(winner, 'Has Won!');
                     
@@ -104,7 +106,13 @@
                 activePlayer.value = props.player[0];
             };
         };
-    }
+    };
+
+    function markAsClicked() {
+        for(let i = 0; i < gridTemplate.value.length; i++) {
+            gridTemplate.value[i].clicked = true;
+        };
+    };
 
     function swapActivePlayer() {
         if(activePlayer.value === props.player[0]) {
