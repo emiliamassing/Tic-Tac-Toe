@@ -1,7 +1,6 @@
 <script setup lang="ts">
     import { ref } from 'vue';
     import AddPlayer from './AddPlayer.vue';
-    import GameResults from './GameResults.vue';
     import Player from '../models/Player';
     import { IGameBoard } from '../models/IGameBoard';
 
@@ -33,7 +32,7 @@
     ];
 
     let gameIsRunning = ref(true);
-    let winner = ref(false);
+    let hasWon = ref(false);
     let winningPlayer = ref();
     
     const gridContainer: string = 'gridContainer';
@@ -50,51 +49,59 @@
     function endGame() {
         gameIsRunning.value = false;
         localStorage.removeItem('playerList');
+        gridTemplate.value.forEach(grid => {
+            grid.shape = '';
+            grid.clicked = false;
+            hasWon.value = false;
+            winningPlayer.value = '';
+        });
     };
 
     function clearBoard() {
         gridTemplate.value.forEach(grid => {
             grid.shape = '';
             grid.clicked = false;
+            hasWon.value = false;
+            winningPlayer.value = '';
         });
     };
 
-    /*function randomizeFirstPlayer(): Player {
-        const randomPlayer = props.player[Math.floor(Math.random()*props.player.length)];
-        console.log(randomPlayer);
-
-        return randomPlayer;
-    };*/
-
     function placeShape(position: number) {
-        gridTemplate.value[position].shape = activePlayer.value.shape;
-        gridTemplate.value[position].clicked = true;
+        if(gridTemplate.value[position].clicked === false) {
+            gridTemplate.value[position].shape = activePlayer.value.shape;
+            gridTemplate.value[position].clicked = true;
 
-
-        checkIfWinner();
-        swapActivePlayer();
+            checkIfWinner();
+            swapActivePlayer();
+        };
     };
 
     function checkIfWinner() {
         for(let i = 0; i < winningPatterns.length; i++) {
             let [a, b, c] = winningPatterns[i];
-            //console.log([a, b, c]);
-            //console.log(gridTemplate.value[a].shape);
+            
             if(
                 gridTemplate.value[a].shape && 
                 gridTemplate.value[a].shape == gridTemplate.value[b].shape &&
                 gridTemplate.value[a].shape == gridTemplate.value[c].shape
-            ) {
-                winner.value = true;
+                
+            ) {                
+                hasWon.value = true;
 
-                function findWinnerShape(correctShape: any) {
-                    return correctShape.shape === gridTemplate.value[a].shape;
+                if(activePlayer.value === props.player[0]) {
+                    const winner = props.player[0];
+                    winningPlayer.value = winner;
+
+                    console.log(winner, 'Has Won!');
+                    
+                } else if(activePlayer.value === props.player[1]) {
+                    const winner = props.player[1];
+                    winningPlayer.value = winner;
+
+                    console.log(winner, 'Has Won!');
                 };
 
-                const winnerShape = gridTemplate.value.find(findWinnerShape);
-
-                console.log(winnerShape, winningPlayer);
-
+                activePlayer.value = props.player[0];
             };
         };
     }
@@ -117,10 +124,10 @@
             <button @click="clearBoard">Clear Board</button>
             <button @click="endGame">Reset Game</button>
         </nav>
-        <h2 v-if="!winner">{{ props.player[0].name }} VS {{  props.player[1].name }}</h2>
-        <h2 v-else="winner">Game Over</h2>
+        <h2 v-if="!hasWon">{{ props.player[0].name }} VS {{  props.player[1].name }}</h2>
+        <h2 v-else="winner">Congratulations, {{ winningPlayer.name }} has won the game!</h2>
         <div :class="gridContainer">
-            <div v-for="grid in gridTemplate" :class="gridCell" v-bind:key="grid.position" @click.once="placeShape(grid.position)">
+            <div v-for="grid in gridTemplate" :class="gridCell" v-bind:key="grid.position" @click="placeShape(grid.position)">
                 <span> {{ grid.shape }} </span>
             </div>
         </div>
