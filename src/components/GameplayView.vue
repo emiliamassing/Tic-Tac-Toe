@@ -1,6 +1,7 @@
 <script setup lang="ts">
-    import { onMounted, ref } from 'vue';
+    import { ref } from 'vue';
     import AddPlayer from './AddPlayer.vue';
+    import GameResults from './GameResults.vue';
     import Player from '../models/Player';
     import { IGameBoard } from '../models/IGameBoard';
 
@@ -31,7 +32,9 @@
         [2, 4, 6]
     ];
 
-    let gameRunning = ref(true);
+    let gameIsRunning = ref(true);
+    let winner = ref(false);
+    let winningPlayer = ref();
     
     const gridContainer: string = 'gridContainer';
     const gridCell: string = 'gridCell';
@@ -45,7 +48,7 @@
     
     
     function endGame() {
-        gameRunning.value = false;
+        gameIsRunning.value = false;
         localStorage.removeItem('playerList');
     };
 
@@ -67,8 +70,34 @@
         gridTemplate.value[position].shape = activePlayer.value.shape;
         gridTemplate.value[position].clicked = true;
 
+
+        checkIfWinner();
         swapActivePlayer();
     };
+
+    function checkIfWinner() {
+        for(let i = 0; i < winningPatterns.length; i++) {
+            let [a, b, c] = winningPatterns[i];
+            //console.log([a, b, c]);
+            //console.log(gridTemplate.value[a].shape);
+            if(
+                gridTemplate.value[a].shape && 
+                gridTemplate.value[a].shape == gridTemplate.value[b].shape &&
+                gridTemplate.value[a].shape == gridTemplate.value[c].shape
+            ) {
+                winner.value = true;
+
+                function findWinnerShape(correctShape: any) {
+                    return correctShape.shape === gridTemplate.value[a].shape;
+                };
+
+                const winnerShape = gridTemplate.value.find(findWinnerShape);
+
+                console.log(winnerShape, winningPlayer);
+
+            };
+        };
+    }
 
     function swapActivePlayer() {
         if(activePlayer.value === props.player[0]) {
@@ -82,14 +111,14 @@
 </script>
 
 <template>
-    <main v-if="gameRunning">
-        <h2>Gameplay</h2>
+    <main v-if="gameIsRunning">
         <nav :class="buttonContainer">
             <button>Show Results</button>
             <button @click="clearBoard">Clear Board</button>
             <button @click="endGame">Reset Game</button>
         </nav>
-        <p>{{ props.player[0].name }} VS {{  props.player[1].name }}</p>
+        <h2 v-if="!winner">{{ props.player[0].name }} VS {{  props.player[1].name }}</h2>
+        <h2 v-else="winner">Game Over</h2>
         <div :class="gridContainer">
             <div v-for="grid in gridTemplate" :class="gridCell" v-bind:key="grid.position" @click.once="placeShape(grid.position)">
                 <span> {{ grid.shape }} </span>
