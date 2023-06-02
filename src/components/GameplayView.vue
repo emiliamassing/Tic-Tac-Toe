@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { ref } from 'vue';
+    import { onMounted, ref } from 'vue';
     import AddPlayer from './AddPlayer.vue';
     import Player from '../models/Player';
     import { IGameBoard } from '../models/IGameBoard';
@@ -40,6 +40,9 @@
     const props = defineProps<IPlayerProps>();
 
     let activePlayer = ref(props.player[0]);
+
+    console.log(activePlayer);
+    
     
     function endGame() {
         gameRunning.value = false;
@@ -61,9 +64,6 @@
     };*/
 
     function placeShape(position: number) {
-       // console.log('Placera pjäs', position);
-       // console.log('Plats', gridTemplate.value[position]);
-        
         gridTemplate.value[position].shape = activePlayer.value.shape;
         gridTemplate.value[position].clicked = true;
 
@@ -71,7 +71,13 @@
     };
 
     function swapActivePlayer() {
-        console.log('Swap Active Player');
+        if(activePlayer.value === props.player[0]) {
+            console.log('X');
+            activePlayer.value = props.player[1];
+        } else {
+            console.log('O');
+            activePlayer.value = props.player[0];
+        };
     };
 </script>
 

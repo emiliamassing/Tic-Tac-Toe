@@ -46,7 +46,7 @@
             <input type='text' name='player' v-model="playerNameO">
         </label>
         </div>
-        <button :class="addPlayerBtn" @click="addPlayers">Add Player</button>
+        <button :class="addPlayerBtn" @click="addPlayers">Start Game</button>
     </div>
     <template v-else>
         <GameplayView :player="players"></GameplayView>
