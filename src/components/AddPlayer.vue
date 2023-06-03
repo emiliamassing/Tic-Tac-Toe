@@ -19,7 +19,7 @@
     };
 
     function addPlayers() {
-        players.value.push(new Player(playerNameX.value, 'X'), new Player(playerNameO.value, 'O'));
+        players.value.push(new Player(playerNameX.value, 'X', 0), new Player(playerNameO.value, 'O', 0));
         localStorage.setItem('playerList', JSON.stringify(players.value));
 
         checkplayersLength();
@@ -58,8 +58,21 @@
         display: flex;
         flex-direction: column;
 
+        span {
+            font-size: 1.5rem;
+        }
+
         label {
             margin-bottom: 1em;
+        }
+
+        input {
+            font-family: 'Playfair', serif;
+            font-size: 1.2rem;
+            border-radius: 4px;
+            width: 11rem;
+            height: 1.4rem;
+            border: 2px solid #333;
         }
 
         .addPlayerBtn {

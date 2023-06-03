@@ -35,7 +35,7 @@
     let hasWon = ref(false);
     let isTie = ref(false);
     let winningPlayer = ref();
-    
+
     const gridContainer: string = 'gridContainer';
     const gridCell: string = 'gridCell';
     const buttonContainer: string = 'buttonContainer';
@@ -43,9 +43,6 @@
     const props = defineProps<IPlayerProps>();
 
     let activePlayer = ref(props.player[0]);
-
-    console.log(activePlayer);
-    
     
     function endGame() {
         gameIsRunning.value = false;
@@ -74,7 +71,6 @@
             gridTemplate.value[position].clicked = true;
 
             checkIfWinner();
-            checkIfTie();
             swapActivePlayer();
         };
     };
@@ -90,31 +86,28 @@
                 
             ) {                
                 hasWon.value = true;
+                isTie.value = false;
 
                 if(activePlayer.value === props.player[0]) {
                     const winner = props.player[0];
                     winningPlayer.value = winner;
+    
                     markAsClicked();
-                    
                 } else if(activePlayer.value === props.player[1]) {
                     const winner = props.player[1];
                     winningPlayer.value = winner;
+
                     markAsClicked();
                 };
 
                 activePlayer.value = props.player[0]; 
                 return;
             };
-        };
-    };
 
-    function checkIfTie() {
-
-        if(gridTemplate.value.every((item) => item.shape != '')) {
-            console.log('Tie');
-
-            hasWon.value = true;
-            isTie.value = true;
+            if(gridTemplate.value.every((item) => item.shape != '')) {
+                hasWon.value = true;
+                isTie.value = true;
+            };
         };
     };
 
@@ -141,6 +134,7 @@
             <button @click="endGame">Reset Game</button>
         </nav>
         <h2>{{ props.player[0].name }} VS {{  props.player[1].name }}</h2>
+        <h3 v-if="!hasWon">{{ activePlayer.name }}'s turn - Shape: {{ activePlayer.shape }}</h3>
         <template v-if="hasWon && !isTie">
             <h3>Congratulations, {{ winningPlayer.name }} has won the game!</h3>
         </template>
@@ -171,7 +165,7 @@
         .gridCell {
             height: 15em;
             width: 15em;
-            outline: 1px solid #222;
+            outline: 2px solid #4b4a4a;
             margin: 5px;
             cursor: pointer;
 
@@ -182,7 +176,6 @@
     }
 
     .buttonContainer {
-        margin-top: 1em;
 
         button {
             margin: 10px;
