@@ -19,7 +19,7 @@
     };
 
     function addPlayers() {
-        players.value.push(new Player(playerNameX.value, 'X', 0), new Player(playerNameO.value, 'O', 0));
+        players.value.push(new Player(playerNameX.value, 'X'), new Player(playerNameO.value, 'O'));
         localStorage.setItem('playerList', JSON.stringify(players.value));
 
         checkplayersLength();

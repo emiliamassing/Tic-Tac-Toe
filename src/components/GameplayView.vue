@@ -129,7 +129,6 @@
 <template>
     <main v-if="gameIsRunning">
         <nav :class="buttonContainer">
-            <button>Show Results</button>
             <button @click="clearBoard">Clear Board</button>
             <button @click="endGame">Reset Game</button>
         </nav>
